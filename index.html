@@ -3,103 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
 <title>Dice Roller – FUDGE inspired system</title>
 
 <style>
-body{
-  font-family:Inter,sans-serif;
-  background:#1c1c1c;
-  color:#f5f5f5;
-  margin:0;
-  padding:16px;
-}
-h2{
-  font-family:Cinzel,serif;
-  letter-spacing:2px;
-  margin-bottom:16px;
-}
+body{font-family:Inter,sans-serif;background:#1c1c1c;color:#f5f5f5;margin:0;padding:16px;}
+h2{font-family:Cinzel,serif;letter-spacing:2px;margin-bottom:16px;}
 
-.card{
-  background:#2a2a2a;
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:14px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.4);
-}
+.card{background:#2a2a2a;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.4);}
 
-label{
-  font-weight:600;
-  font-size:14px;
-  display:block;
-  margin-bottom:4px;
-}
+label{font-weight:600;font-size:14px;display:block;margin-bottom:4px;}
 
-input,button{
-  width:100%;
-  font-size:16px;
-  padding:8px;
-  margin-top:4px;
-  border-radius:8px;
-  border:none;
-}
-
-button{
-  cursor:pointer;
-  background:#444;
-  color:white;
-}
+input,button{width:100%;font-size:16px;padding:8px;margin-top:4px;border-radius:8px;border:none;}
+button{cursor:pointer;background:#444;color:white;}
 button:hover{background:#666;}
 
-.probBar{
-  display:flex;
-  height:24px;
-  border-radius:8px;
-  overflow:hidden;
-  margin-top:8px;
-}
-.seg{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:11px;
-  transition:width .3s ease;
-}
+.probBar{display:flex;height:24px;border-radius:8px;overflow:hidden;margin-top:8px;}
+.seg{display:flex;align-items:center;justify-content:center;font-size:11px;transition:width .3s ease;}
 .yesAnd{background:#2ecc71;}
 .yesBut{background:#27ae60;}
 .noBut{background:#e67e22;}
 .noAnd{background:#c0392b;}
 
-.resultCard{
-  text-align:center;
-  font-size:22px;
-  font-weight:600;
-  border-radius:12px;
-  padding:14px;
-  transition:background .3s ease,transform .15s ease;
-}
+.resultCard{text-align:center;font-size:22px;font-weight:600;border-radius:12px;padding:14px;transition:background .3s ease,transform .15s ease;}
 .resultCard.pop{transform:scale(1.03);}
 .result-yesAnd{background:#145a32;}
 .result-yesBut{background:#0e6655;}
 .result-noBut{background:#7e5109;}
 .result-noAnd{background:#641e16;}
 
-.diceRow{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  margin-top:10px;
-  flex-wrap:wrap;
-}
-.die{
-  width:44px;height:44px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:600;font-size:16px;
-  background:#333;
-  box-shadow:inset 0 0 6px rgba(0,0,0,.6);
-}
+.diceRow{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.die{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;background:#333;box-shadow:inset 0 0 6px rgba(0,0,0,.6);}
 .pos{color:#2ecc71;}
 .neg{color:#e74c3c;}
 .kept{outline:2px solid #aaa;}
@@ -149,10 +83,10 @@ input[type=range]{accent-color:#2ecc71;}
 <div class="card">
 <label>Outcome Chances</label>
 <div class="probBar">
-<div id="barYesAnd" class="seg yesAnd">0%</div>
-<div id="barYesBut" class="seg yesBut">0%</div>
-<div id="barNoBut" class="seg noBut">0%</div>
-<div id="barNoAnd" class="seg noAnd">0%</div>
+<div id="barYesAnd" class="seg yesAnd">Yes &<br>0%</div>
+<div id="barYesBut" class="seg yesBut">Yes but<br>0%</div>
+<div id="barNoBut" class="seg noBut">No but<br>0%</div>
+<div id="barNoAnd" class="seg noAnd">No &<br>0%</div>
 </div>
 </div>
 
@@ -255,7 +189,8 @@ function rollDice(){
   else if(adv<0) kept=[...rolls].sort((a,b)=>a.value-b.value).slice(0,3);
   else kept=[...rolls];
 
-  let totalScore=kept.reduce((a,b)=>a+b.value,0)+skill+mod;
+  let diceTotal=kept.reduce((a,b)=>a+b.value,0);
+  let totalScore=diceTotal+skill+mod;
 
   let decisiveDie = kept.reduce(
     (min,d)=>Math.abs(d.value)<Math.abs(min.value)?d:min,
@@ -288,8 +223,10 @@ function rollDice(){
   });
 
   document.getElementById("detailsBox").innerHTML=
-    `Dice rolled: ${rolls.map(d=>d.value).join(", ")}<br>
-     Kept: ${kept.map(d=>d.value).join(", ")}<br>
+    `Dice total: ${diceTotal}<br>
+     Skill: ${skill}<br>
+     Modifier: ${mod}<br>
+     <b>Total: ${totalScore}</b><br>
      Decisive die: ${decisiveDie.value} (${signPositive?"Positive":"Negative"})`;
 }
 
@@ -311,16 +248,16 @@ function simulateProbabilities(){
 }
 
 function updateProbBar(counts,total){
-  function set(id,value){
+  function set(id,value,label){
     const pct=((value/total)*100).toFixed(0);
     const el=document.getElementById(id);
     el.style.width=pct+"%";
-    el.textContent=pct+"%";
+    el.innerHTML=label+"<br>"+pct+"%";
   }
-  set("barYesAnd",counts.yesAnd);
-  set("barYesBut",counts.yesBut);
-  set("barNoBut",counts.noBut);
-  set("barNoAnd",counts.noAnd);
+  set("barYesAnd",counts.yesAnd,"Yes &");
+  set("barYesBut",counts.yesBut,"Yes but");
+  set("barNoBut",counts.noBut,"No but");
+  set("barNoAnd",counts.noAnd,"No &");
 }
 
 function toggleDetails(){
