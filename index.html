@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<title>Dice Roller – FUDGE inspired system</title>
+
+<style>
+body{
+  font-family:Inter,sans-serif;
+  background:#1c1c1c;
+  color:#f5f5f5;
+  margin:0;
+  padding:16px;
+}
+h2{
+  font-family:Cinzel,serif;
+  letter-spacing:2px;
+  margin-bottom:16px;
+}
+
+.card{
+  background:#2a2a2a;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
+
+label{
+  font-weight:600;
+  font-size:14px;
+  display:block;
+  margin-bottom:4px;
+}
+
+input,button{
+  width:100%;
+  font-size:16px;
+  padding:8px;
+  margin-top:4px;
+  border-radius:8px;
+  border:none;
+}
+
+button{
+  cursor:pointer;
+  background:#444;
+  color:white;
+}
+button:hover{background:#666;}
+
+.probBar{
+  display:flex;
+  height:24px;
+  border-radius:8px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.seg{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  transition:width .3s ease;
+}
+.yesAnd{background:#2ecc71;}
+.yesBut{background:#27ae60;}
+.noBut{background:#e67e22;}
+.noAnd{background:#c0392b;}
+
+.resultCard{
+  text-align:center;
+  font-size:22px;
+  font-weight:600;
+  border-radius:12px;
+  padding:14px;
+  transition:background .3s ease,transform .15s ease;
+}
+.resultCard.pop{transform:scale(1.03);}
+.result-yesAnd{background:#145a32;}
+.result-yesBut{background:#0e6655;}
+.result-noBut{background:#7e5109;}
+.result-noAnd{background:#641e16;}
+
+.diceRow{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+.die{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;font-size:16px;
+  background:#333;
+  box-shadow:inset 0 0 6px rgba(0,0,0,.6);
+}
+.pos{color:#2ecc71;}
+.neg{color:#e74c3c;}
+.kept{outline:2px solid #aaa;}
+.dec{outline:3px solid gold;box-shadow:0 0 10px gold;}
+
+.detailsBox,.simBox{display:none;font-size:14px;margin-top:10px;}
+
+input[type=range]{accent-color:#2ecc71;}
+</style>
+</head>
+
+<body>
+
+<h2>Dice roller - FUDGE inspired system</h2>
+
+<!-- PARAMETERS -->
+<div class="card">
+<label>Dice faces</label>
+<input type="text" id="facesInput" value="-3,-2,-1,+1,+2,+3">
+</div>
+
+<div class="card">
+<label>Target Difficulty</label>
+<input type="range" id="tdRange" min="0" max="15" value="3">
+<input type="number" id="tdBox" min="0" max="15" value="3">
+</div>
+
+<div class="card">
+<label>Skill Rank</label>
+<input type="range" id="skillRange" min="0" max="8" value="2">
+<input type="number" id="skillBox" min="0" max="8" value="2">
+</div>
+
+<div class="card">
+<label>Situational Modifier</label>
+<input type="range" id="modRange" min="-4" max="4" value="0">
+<input type="number" id="modBox" min="-4" max="4" value="0">
+</div>
+
+<div class="card">
+<label>Dis/Advantage</label>
+<input type="range" id="advRange" min="-3" max="3" value="0">
+<input type="number" id="advBox" min="-3" max="3" value="0">
+</div>
+
+<!-- PROBABILITY BAR -->
+<div class="card">
+<label>Outcome Chances</label>
+<div class="probBar">
+<div id="barYesAnd" class="seg yesAnd">0%</div>
+<div id="barYesBut" class="seg yesBut">0%</div>
+<div id="barNoBut" class="seg noBut">0%</div>
+<div id="barNoAnd" class="seg noAnd">0%</div>
+</div>
+</div>
+
+<!-- ROLL BUTTON -->
+<div class="card">
+<button onclick="rollDice()">🎲 Roll</button>
+</div>
+
+<!-- RESULT -->
+<div class="card resultCard" id="resultCard">
+Roll to see result
+</div>
+
+<!-- DICE -->
+<div class="card">
+<div id="diceDisplay" class="diceRow"></div>
+</div>
+
+<!-- DETAILS -->
+<div class="card">
+<button onclick="toggleDetails()">Show Details</button>
+<div id="detailsBox" class="detailsBox"></div>
+</div>
+
+<!-- SIMULATION -->
+<div class="card">
+<button onclick="toggleSim()">Show Simulation</button>
+<div id="simBox" class="simBox">
+<label>Simulation runs</label>
+<input type="number" id="simCount" value="10000" min="100" step="100">
+<button onclick="runSimulation()">Run Simulation</button>
+<div id="simResults"></div>
+</div>
+</div>
+
+<script>
+function sync(range, box){
+  range.addEventListener("input", ()=>box.value=range.value);
+  box.addEventListener("input", ()=>range.value=box.value);
+}
+sync(tdRange,tdBox);
+sync(skillRange,skillBox);
+sync(modRange,modBox);
+sync(advRange,advBox);
+
+function parseFaces(){
+  return facesInput.value.split(",").map(x=>{
+    let s=x.trim();
+    if(!s) return null;
+    let sign=s.startsWith("-")?-1:1;
+    let value=parseInt(s);
+    if(isNaN(value)) return null;
+    return {value:value, sign:sign};
+  }).filter(x=>x);
+}
+
+function rollDie(faces){
+  return faces[Math.floor(Math.random()*faces.length)];
+}
+
+function evaluateRoll(faces, td, skill, mod, adv){
+  const diceCount = adv===0?3:3+Math.abs(adv);
+  let rolls=[];
+  for(let i=0;i<diceCount;i++) rolls.push(rollDie(faces));
+
+  let kept;
+  if(adv>0) kept=[...rolls].sort((a,b)=>b.value-a.value).slice(0,3);
+  else if(adv<0) kept=[...rolls].sort((a,b)=>a.value-b.value).slice(0,3);
+  else kept=[...rolls];
+
+  let totalScore=kept.reduce((a,b)=>a+b.value,0)+skill+mod;
+
+  let decisiveDie = kept.reduce(
+    (min,d)=>Math.abs(d.value)<Math.abs(min.value)?d:min,
+    kept[0]
+  );
+
+  let signPositive = decisiveDie.sign>0;
+
+  if(signPositive && totalScore>td) return "yesAnd";
+  if(!signPositive && totalScore>=td) return "yesBut";
+  if(signPositive && totalScore<=td) return "noBut";
+  return "noAnd";
+}
+
+function rollDice(){
+  const faces=parseFaces();
+  const td=parseInt(tdBox.value);
+  const skill=parseInt(skillBox.value);
+  const mod=parseInt(modBox.value);
+  const adv=parseInt(advBox.value);
+
+  const diceCount = adv===0?3:3+Math.abs(adv);
+
+  let rolls=[];
+  for(let i=0;i<diceCount;i++) rolls.push(rollDie(faces));
+
+  let kept;
+  if(adv>0) kept=[...rolls].sort((a,b)=>b.value-a.value).slice(0,3);
+  else if(adv<0) kept=[...rolls].sort((a,b)=>a.value-b.value).slice(0,3);
+  else kept=[...rolls];
+
+  let totalScore=kept.reduce((a,b)=>a+b.value,0)+skill+mod;
+
+  let decisiveDie = kept.reduce(
+    (min,d)=>Math.abs(d.value)<Math.abs(min.value)?d:min,
+    kept[0]
+  );
+
+  let signPositive = decisiveDie.sign>0;
+
+  let outcome;
+  if(signPositive && totalScore>td) outcome="yesAnd";
+  else if(!signPositive && totalScore>=td) outcome="yesBut";
+  else if(signPositive && totalScore<=td) outcome="noBut";
+  else outcome="noAnd";
+
+  const card=document.getElementById("resultCard");
+  card.className="card resultCard result-"+outcome+" pop";
+  card.innerHTML=`Total ${totalScore} vs TD ${td}<br>${outcome.toUpperCase()}`;
+  setTimeout(()=>card.classList.remove("pop"),150);
+
+  const diceDisplay=document.getElementById("diceDisplay");
+  diceDisplay.innerHTML="";
+
+  rolls.forEach(d=>{
+    const die=document.createElement("div");
+    die.className="die "+(d.sign>0?"pos":"neg");
+    if(kept.includes(d)) die.classList.add("kept");
+    if(d===decisiveDie) die.classList.add("dec");
+    die.textContent=(d.sign>0?"+":"")+d.value;
+    diceDisplay.appendChild(die);
+  });
+
+  document.getElementById("detailsBox").innerHTML=
+    `Dice rolled: ${rolls.map(d=>d.value).join(", ")}<br>
+     Kept: ${kept.map(d=>d.value).join(", ")}<br>
+     Decisive die: ${decisiveDie.value} (${signPositive?"Positive":"Negative"})`;
+}
+
+function simulateProbabilities(){
+  const faces=parseFaces();
+  const td=parseInt(tdBox.value);
+  const skill=parseInt(skillBox.value);
+  const mod=parseInt(modBox.value);
+  const adv=parseInt(advBox.value);
+
+  const sims=2000;
+  let counts={yesAnd:0,yesBut:0,noBut:0,noAnd:0};
+
+  for(let i=0;i<sims;i++){
+    counts[evaluateRoll(faces,td,skill,mod,adv)]++;
+  }
+
+  updateProbBar(counts,sims);
+}
+
+function updateProbBar(counts,total){
+  function set(id,value){
+    const pct=((value/total)*100).toFixed(0);
+    const el=document.getElementById(id);
+    el.style.width=pct+"%";
+    el.textContent=pct+"%";
+  }
+  set("barYesAnd",counts.yesAnd);
+  set("barYesBut",counts.yesBut);
+  set("barNoBut",counts.noBut);
+  set("barNoAnd",counts.noAnd);
+}
+
+function toggleDetails(){
+  const box=document.getElementById("detailsBox");
+  box.style.display=box.style.display==="block"?"none":"block";
+}
+
+function toggleSim(){
+  const box=document.getElementById("simBox");
+  box.style.display=box.style.display==="block"?"none":"block";
+}
+
+function runSimulation(){
+  const faces=parseFaces();
+  const td=parseInt(tdBox.value);
+  const skill=parseInt(skillBox.value);
+  const mod=parseInt(modBox.value);
+  const adv=parseInt(advBox.value);
+  const simCount=parseInt(document.getElementById("simCount").value)||1000;
+
+  let counts={yesAnd:0,yesBut:0,noBut:0,noAnd:0};
+
+  for(let i=0;i<simCount;i++){
+    counts[evaluateRoll(faces,td,skill,mod,adv)]++;
+  }
+
+  function pct(x){return ((x/simCount)*100).toFixed(1)+"%";}
+
+  document.getElementById("simResults").innerHTML=
+    `Yes and: ${pct(counts.yesAnd)}<br>
+     Yes but: ${pct(counts.yesBut)}<br>
+     No but: ${pct(counts.noBut)}<br>
+     No and: ${pct(counts.noAnd)}`;
+}
+
+[tdRange, tdBox, skillRange, skillBox, modRange, modBox, advRange, advBox, facesInput]
+.forEach(el => el.addEventListener("input", simulateProbabilities));
+
+simulateProbabilities();
+</script>
+
+</body>
+</html>
