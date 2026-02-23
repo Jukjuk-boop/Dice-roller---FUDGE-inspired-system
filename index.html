@@ -10,8 +10,6 @@
 body{font-family:Inter,sans-serif;background:#1c1c1c;color:#f5f5f5;margin:0;padding:16px;}
 h2{font-family:Cinzel,serif;letter-spacing:2px;margin-bottom:16px;}
 
-.card{background:#2a2a2a;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.4);}
-
 label{font-weight:600;font-size:14px;display:block;margin-bottom:4px;}
 
 input,button{width:100%;font-size:16px;padding:8px;margin-top:4px;border-radius:8px;border:none;}
@@ -67,10 +65,22 @@ input[type=range]{accent-color:#2ecc71;}
   .control{width:120px;}
 .slider{width:180px;}
 
-.card input,
-.card button{
-  width:auto;
-  max-width:100%;
+.card{
+  background:#2a2a2a;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
+
+  width:90%;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+  .card button{
+  width:30%;
+  display:block;
+  margin:10px auto 0 auto;
 }
   
 </style>
@@ -343,4 +353,5 @@ simulateProbabilities();
 </body>
 
 </html>
+
 
