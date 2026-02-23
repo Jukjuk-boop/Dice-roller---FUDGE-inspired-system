@@ -42,41 +42,78 @@ button:hover{background:#666;}
 .detailsBox,.simBox{display:none;font-size:14px;margin-top:10px;}
 
 input[type=range]{accent-color:#2ecc71;}
+
+  .app{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+
+.left-panel{
+  border-right:1px solid #444;
+  padding-right:16px;
+}
+
+.right-panel{
+  padding-left:16px;
+}
+
+@media (max-width:800px){
+  .app{grid-template-columns:1fr;}
+  .left-panel{border-right:none;padding-right:0;}
+  .right-panel{padding-left:0;}
+}
+
+  .control{width:120px;}
+.slider{width:180px;}
+
+.card input,
+.card button{
+  width:auto;
+  max-width:100%;
+}
+  
 </style>
 </head>
 
 <body>
-
+<div class="app">
+  
 <h2>Dice roller - FUDGE inspired system</h2>
 
+<div class="left-panel">
 <!-- PARAMETERS -->
 <div class="card">
 <label>Dice faces</label>
-<input type="text" id="facesInput" value="-3,-2,-1,+1,+2,+3">
+<input type="text"
+       id="facesInput"
+       class="control"
+       placeholder="-3,-2,-1,+1,+2,+3"
+       value="-3,-2,-1,+1,+2,+3">
 </div>
 
 <div class="card">
 <label>Target Difficulty</label>
-<input type="range" id="tdRange" min="0" max="15" value="3">
-<input type="number" id="tdBox" min="0" max="15" value="3">
+<input type="range" id="tdRange" class="slider" min="0" max="15" value="3">
+<input type="number" id="tdBox" class="control" min="0" max="15" value="3">
 </div>
 
 <div class="card">
 <label>Skill Rank</label>
-<input type="range" id="skillRange" min="0" max="8" value="2">
-<input type="number" id="skillBox" min="0" max="8" value="2">
+<input type="range" id="skillRange" class="slider" min="0" max="8" value="2">
+<input type="number" id="skillBox" class="control" min="0" max="8" value="2">
 </div>
 
 <div class="card">
 <label>Situational Modifier</label>
-<input type="range" id="modRange" min="-4" max="4" value="0">
-<input type="number" id="modBox" min="-4" max="4" value="0">
+<input type="range" id="modRange" class="slider" min="-4" max="4" value="0">
+<input type="number" id="modBox" class="control" min="-4" max="4" value="0">
 </div>
 
 <div class="card">
 <label>Dis/Advantage</label>
-<input type="range" id="advRange" min="-3" max="3" value="0">
-<input type="number" id="advBox" min="-3" max="3" value="0">
+<input type="range" id="advRange" class="slider" min="-3" max="3" value="0">
+<input type="number" id="advBox" class="control" min="-3" max="3" value="0">
 </div>
 
 <!-- PROBABILITY BAR -->
@@ -105,6 +142,8 @@ Roll to see result
 <div id="diceDisplay" class="diceRow"></div>
 </div>
 
+</div>
+<div class="right-panel">
 <!-- DETAILS -->
 <div class="card">
 <button onclick="toggleDetails()">Show Details</button>
@@ -298,6 +337,10 @@ function runSimulation(){
 
 simulateProbabilities();
 </script>
-
+  
+</div>
+</div>
+  
 </body>
+
 </html>
