@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Narrative Dice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="title">Narrative Dice</header>
+
+<main class="container">
+
+  <!-- INPUT CARD -->
+  <section class="card">
+    <h2>🎛️ Inputs</h2>
+
+    <label>🎯 Target Difficulty: <span id="tdVal">10</span></label>
+    <input type="range" id="td" min="2" max="20" value="10">
+
+    <label>🧠 Skill: <span id="skillVal">0</span></label>
+    <input type="range" id="skill" min="-5" max="5" value="0">
+
+    <label>⚖️ Modifier: <span id="modVal">0</span></label>
+    <input type="range" id="mod" min="-5" max="5" value="0">
+
+    <label>🎲 Advantage</label>
+    <select id="adv">
+      <option value="0">None</option>
+      <option value="1">Advantage</option>
+      <option value="-1">Disadvantage</option>
+    </select>
+
+    <button id="rollBtn">🎲 ROLL</button>
+  </section>
+
+  <!-- ODDS CARD -->
+  <section class="card">
+    <h2>📊 Outcome Odds</h2>
+    <div class="bar" id="oddsBar"></div>
+  </section>
+
+  <!-- RESULT CARD -->
+  <section class="card result neutral" id="resultCard">
+    <div class="resultText" id="resultText">ROLL TO BEGIN</div>
+    <div class="diceRow" id="diceRow"></div>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

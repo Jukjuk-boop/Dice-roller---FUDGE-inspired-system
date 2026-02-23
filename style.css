@@ -1,0 +1,141 @@
+:root{
+  --bg:#0f1115;
+  --card:#1a1d24;
+  --text:#e8ecf1;
+  --accent:#6ae3ff;
+
+  --yesand:#22c55e;
+  --yesbut:#14b8a6;
+  --nobut:#f59e0b;
+  --noand:#ef4444;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+.title{
+  font-family:Cinzel, serif;
+  font-size:2rem;
+  text-align:center;
+  padding:1rem;
+  letter-spacing:2px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:1rem;
+  display:grid;
+  gap:1rem;
+}
+
+.card{
+  background:var(--card);
+  padding:1rem;
+  border-radius:16px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+}
+
+h2{
+  margin-top:0;
+  font-size:1.1rem;
+  letter-spacing:1px;
+}
+
+input,select,button{
+  width:100%;
+  margin:0.3rem 0 0.8rem 0;
+}
+
+button{
+  padding:0.8rem;
+  border:none;
+  border-radius:12px;
+  background:var(--accent);
+  font-weight:600;
+  cursor:pointer;
+}
+
+button:hover{opacity:0.9}
+
+/* RESULT CARD COLORS */
+
+.result{
+  text-align:center;
+  transition:background 0.3s ease, transform 0.15s ease;
+}
+
+.result.pop{ transform:scale(1.03); }
+
+.result.yesand{ background:var(--yesand); }
+.result.yesbut{ background:var(--yesbut); }
+.result.nobut{ background:var(--nobut); }
+.result.noand{ background:var(--noand); }
+.result.neutral{ background:var(--card); }
+
+.resultText{
+  font-size:1.8rem;
+  font-weight:600;
+  letter-spacing:2px;
+  margin-bottom:0.5rem;
+}
+
+/* DICE CHIPS */
+
+.diceRow{
+  display:flex;
+  justify-content:center;
+  gap:0.4rem;
+  flex-wrap:wrap;
+}
+
+.die{
+  width:42px;
+  height:42px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:600;
+  background:#2a2f3a;
+  animation:fadeUp 0.2s ease;
+}
+
+.die.keep{
+  outline:2px solid gold;
+  box-shadow:0 0 8px gold;
+}
+
+.die.pos{ background:#16a34a; }
+.die.neg{ background:#dc2626; }
+
+/* ODDS BAR */
+
+.bar{
+  display:flex;
+  height:28px;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.seg{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0.75rem;
+  font-weight:600;
+  transition:width 0.3s ease;
+}
+
+/* ANIMATIONS */
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(6px)}
+  to{opacity:1; transform:translateY(0)}
+}
