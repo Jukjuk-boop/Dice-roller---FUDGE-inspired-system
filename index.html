@@ -213,6 +213,13 @@ sync(skillRange,skillBox);
 sync(modRange,modBox);
 sync(advRange,advBox);
 
+const outcomeLabels = {
+  yesAnd: "Yes And",
+  yesBut: "Yes But",
+  noBut: "No But",
+  noAnd: "No And"
+};
+  
 function parseFaces(){
   return facesInput.value.split(",").map(x=>{
     let s=x.trim();
@@ -288,7 +295,7 @@ function rollDice(){
 
   const card=document.getElementById("resultCard");
   card.className="card resultCard result-"+outcome+" pop";
-  card.innerHTML=`Total ${totalScore} vs TD ${td}<br>${outcome.toUpperCase()}`;
+  card.innerHTML = `Total ${totalScore} vs TD ${td}<br>${outcomeLabels[outcome]}`;
   setTimeout(()=>card.classList.remove("pop"),150);
 
   const diceDisplay=document.getElementById("diceDisplay");
@@ -386,6 +393,7 @@ simulateProbabilities();
 </body>
 
 </html>
+
 
 
 
