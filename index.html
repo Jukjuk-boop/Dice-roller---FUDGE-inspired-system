@@ -16,8 +16,22 @@ input,button{width:100%;font-size:16px;padding:8px;margin-top:4px;border-radius:
 button{cursor:pointer;background:#444;color:white;}
 button:hover{background:#666;}
 
-.probBar{display:flex;height:24px;border-radius:8px;overflow:hidden;margin-top:8px;}
-.seg{display:flex;align-items:center;justify-content:center;font-size:11px;transition:width .3s ease;}
+.probBar{
+  display:flex;
+  height:36px;              /* taller bar */
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:10px;
+}
+
+.seg{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;           /* bigger text */
+  font-weight:600;
+  transition:width .4s ease;
+}
 .yesAnd{background:#2ecc71;}
 .yesBut{background:#27ae60;}
 .noBut{background:#e67e22;}
@@ -62,8 +76,13 @@ input[type=range]{accent-color:#2ecc71;}
   .right-panel{padding-left:0;}
 }
 
-  .control{width:120px;}
-.slider{width:180px;}
+.slider{
+  width:100%;
+}
+
+.control{
+  width:100%;
+}
 
 .card{
   background:#2a2a2a;
@@ -77,10 +96,18 @@ input[type=range]{accent-color:#2ecc71;}
   margin-right:auto;
 }
 
-  .card button{
+.card button{
   width:30%;
   display:block;
   margin:10px auto 0 auto;
+}
+
+.rollCard{
+  width:100%;
+}
+
+.rollCard button{
+  width:40%;
 }
   
 </style>
@@ -137,7 +164,7 @@ input[type=range]{accent-color:#2ecc71;}
 </div>
 
 <!-- ROLL BUTTON -->
-<div class="card">
+<div class="card rollCard">
 <button onclick="rollDice()">🎲 Roll</button>
 </div>
 
@@ -353,5 +380,6 @@ simulateProbabilities();
 </body>
 
 </html>
+
 
 
